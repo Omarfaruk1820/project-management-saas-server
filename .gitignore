@@ -1,0 +1,26 @@
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Firebase service account credentials
+serviceAccountKey.json
+service-account*.json
+*serviceAccount*.json
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build and coverage
+dist/
+build/
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
