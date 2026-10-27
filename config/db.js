@@ -1,5 +1,3 @@
-// src/config/db.js
-
 import "dotenv/config";
 import { MongoClient } from "mongodb";
 
@@ -35,6 +33,33 @@ function createMongoClient() {
   });
 }
 
+async function createDatabaseIndexes(db) {
+  // Ensure each Firebase user has one MongoDB user document.
+  await db.collection("users").createIndex(
+    { firebaseUid: 1 },
+    {
+      unique: true,
+      name: "unique_firebase_uid",
+    },
+  );
+
+  // Efficiently list a user's projects in creation order.
+  await db.collection("projects").createIndex(
+    { ownerId: 1, createdAt: -1, _id: -1 },
+    {
+      name: "projects_owner_createdAt",
+    },
+  );
+
+  // Efficiently filter a user's projects by status and creation date.
+  await db.collection("projects").createIndex(
+    { ownerId: 1, status: 1, createdAt: -1, _id: -1 },
+    {
+      name: "projects_owner_status_createdAt",
+    },
+  );
+}
+
 export async function connectToMongoDB() {
   if (disconnectPromise) {
     await disconnectPromise;
@@ -60,13 +85,7 @@ export async function connectToMongoDB() {
 
       await db.command({ ping: 1 });
 
-      await db.collection("users").createIndex(
-        { firebaseUid: 1 },
-        {
-          unique: true,
-          name: "unique_firebase_uid",
-        },
-      );
+      await createDatabaseIndexes(db);
 
       client = newClient;
       database = db;

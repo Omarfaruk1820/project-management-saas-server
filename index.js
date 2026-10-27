@@ -9,6 +9,7 @@ import { connectToMongoDB, disconnectFromMongoDB } from "./config/db.js";
 
 import usersRoutes from "./routes/users.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import projectsRoutes from "./routes/projects.routes.js";
 
 const app = express();
 
@@ -81,6 +82,7 @@ app.get("/health", (req, res) => {
 app.use("/api/v1", apiLimiter);
 app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/users", usersRoutes);
+app.use("/api/v1/projects", projectsRoutes);
 
 // 404 handler
 app.use((req, res) => {
