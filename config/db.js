@@ -50,6 +50,34 @@ async function createDatabaseIndexes(db) {
       name: "projects_owner_createdAt",
     },
   );
+  await db
+    .collection("tasks")
+    .createIndex(
+      { ownerId: 1, projectId: 1, createdAt: -1, _id: -1 },
+      { name: "tasks_owner_project_createdAt" },
+    );
+
+  await db.collection("tasks").createIndex(
+    {
+      ownerId: 1,
+      projectId: 1,
+      status: 1,
+      createdAt: -1,
+      _id: -1,
+    },
+    { name: "tasks_owner_project_status_createdAt" },
+  );
+
+  await db.collection("tasks").createIndex(
+    {
+      ownerId: 1,
+      projectId: 1,
+      priority: 1,
+      createdAt: -1,
+      _id: -1,
+    },
+    { name: "tasks_owner_project_priority_createdAt" },
+  );
 
   // Efficiently filter a user's projects by status and creation date.
   await db.collection("projects").createIndex(
@@ -58,6 +86,16 @@ async function createDatabaseIndexes(db) {
       name: "projects_owner_status_createdAt",
     },
   );
+
+  await db
+    .collection("projectMembers")
+    .createIndex({ projectId: 1, userId: 1 }, { unique: true });
+
+  await db.collection("projectMembers").createIndex({ userId: 1, status: 1 });
+
+  await db
+    .collection("projectMembers")
+    .createIndex({ projectId: 1, status: 1 });
 }
 
 export async function connectToMongoDB() {
